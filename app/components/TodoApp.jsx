@@ -1,5 +1,6 @@
 var React = require("react");
 var TodoList = require("TodoList");
+var AddTodo = require("AddTodo");
 
 var TodoApp = React.createClass({
   getInitialState: function(){
@@ -20,13 +21,17 @@ var TodoApp = React.createClass({
       ]
     };
   },
+  // En esta función recibimos el valor del input del hijo (text)::
+  handleAddTodo: function(text){
+    alert('New text: ' + text);
+  },
   render: function(){
-
     var {todos} = this.state;
 
     return (
       <div>
         <TodoList todos={todos} />
+        <AddTodo onAddTodo={this.handleAddTodo}/>
       </div>
     );
   }

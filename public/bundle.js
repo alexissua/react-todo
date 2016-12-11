@@ -25479,6 +25479,7 @@
 
 	var React = __webpack_require__(8);
 	var TodoList = __webpack_require__(236);
+	var AddTodo = __webpack_require__(238);
 
 	var TodoApp = React.createClass({
 	  displayName: "TodoApp",
@@ -25497,6 +25498,10 @@
 	      }]
 	    };
 	  },
+	  // En esta función recibimos el valor del input del hijo (text)::
+	  handleAddTodo: function handleAddTodo(text) {
+	    alert('New text: ' + text);
+	  },
 	  render: function render() {
 	    var todos = this.state.todos;
 
@@ -25504,7 +25509,8 @@
 	    return React.createElement(
 	      "div",
 	      null,
-	      React.createElement(TodoList, { todos: todos })
+	      React.createElement(TodoList, { todos: todos }),
+	      React.createElement(AddTodo, { onAddTodo: this.handleAddTodo })
 	    );
 	  }
 	});
@@ -25964,6 +25970,55 @@
 	});
 
 	module.exports = Todo;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(8);
+
+	var AddTodo = React.createClass({
+	  displayName: "AddTodo",
+
+	  onSubmit: function onSubmit(e) {
+	    e.preventDefault();
+	    // Obtenemos el valor del input::
+	    var text = this.refs.text.value;
+
+	    if (text.length > 0) {
+	      // Se lo pasamos como un prop a su padre::
+	      this.props.onAddTodo(text);
+	      this.refs.text.value = "";
+	    } else {
+	      this.refs.text.focus();
+	      /*
+	      text = "Introduzca algún texto por favor...";
+	      this.props.onSetTodoText(text);
+	      this.refs.text.value = "";
+	      */
+	    }
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement(
+	        "form",
+	        { onSubmit: this.onSubmit, className: "addtodo-form" },
+	        React.createElement("input", { type: "text", ref: "text", placeholder: "What do you need to do?" }),
+	        React.createElement(
+	          "button",
+	          { id: "button-expanded", className: "button expanded" },
+	          "Send"
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = AddTodo;
 
 /***/ }
 /******/ ]);
