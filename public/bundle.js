@@ -25531,14 +25531,18 @@
 	    });
 	  },
 	  render: function render() {
-	    var todos = this.state.todos;
+	    var _state = this.state,
+	        todos = _state.todos,
+	        showCompleted = _state.showCompleted,
+	        searchText = _state.searchText;
 
+	    var filterTodos = TodoAPI.filterTodos(todos, showCompleted, searchText);
 
 	    return React.createElement(
 	      "div",
 	      null,
 	      React.createElement(TodoSearch, { onSearch: this.handleSearch }),
-	      React.createElement(TodoList, { todos: todos, onToggle: this.handleToggle }),
+	      React.createElement(TodoList, { todos: filterTodos, onToggle: this.handleToggle }),
 	      React.createElement(AddTodo, { onAddTodo: this.handleAddTodo })
 	    );
 	  }
@@ -34093,6 +34097,39 @@
 	    } else {
 	      return [];
 	    }
+	  },
+	  filterTodos: function filterTodos(todos, showCompleted, searchText) {
+	    var filterTodos = todos;
+
+	    //Filter by showClompleted
+	    // La función filter se ejecuta a cada elemento en el array, es recursiva::
+	    filterTodos = filterTodos.filter(function (todo) {
+	      if (todo.completed === false || showCompleted === true) return todo;
+	    });
+
+	    //Filter by searchText
+	    if (searchText.length > 0) {
+	      filterTodos = filterTodos.filter(function (todo) {
+	        if (todo.text.toLowerCase().indexOf(searchText) > -1 || searchText.length === 0) return todo;
+	      });
+	    }
+
+	    //Sort todos with non-completed first:
+	    filterTodos.sort(function (a, b) {
+	      // Return -1 a debe de ir antes de b
+	      // Return 1 a debe de ir despues de b
+	      // Return 0, a y b son iguales
+
+	      if (a.completed === false && b.completed === true) {
+	        return -1;
+	      } else if (a.completed === true && b.completed === false) {
+	        return 1;
+	      } else {
+	        return 0;
+	      }
+	    });
+
+	    return filterTodos;
 	  }
 	};
 
