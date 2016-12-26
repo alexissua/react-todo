@@ -2,6 +2,7 @@ var React = require("react");
 var TodoList = require("TodoList");
 var AddTodo = require("AddTodo");
 var TodoSearch = require("TodoSearch");
+var uuid = require('node-uuid');
 
 var TodoApp = React.createClass({
   getInitialState: function(){
@@ -10,15 +11,15 @@ var TodoApp = React.createClass({
       searchText: '',
       todos: [
         {
-          id: 1,
+          id: uuid(),
           text: 'Walk the fucking dog'
         },
         {
-          id: 2,
+          id: uuid(),
           text: 'Clean the yard'
         },
         {
-          id: 3,
+          id: uuid(),
           text: 'Fuck the society'
         }
       ]
@@ -32,7 +33,16 @@ var TodoApp = React.createClass({
   },
   // En esta función recibimos el valor del input del hijo (text)::
   handleAddTodo: function(text){
-    alert('New text: ' + text);
+    this.setState({
+      todos: [
+        // Usamos spread para unir los arrays::
+        ...this.state.todos,
+        {
+          id: uuid(),
+          text: text
+        }
+      ]
+    });
   },
   render: function(){
     var {todos} = this.state;
