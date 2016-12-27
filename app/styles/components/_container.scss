@@ -1,0 +1,33 @@
+.container{
+  margin-bottom: 3%;
+  padding: 0;
+  background-color: $light-grey;
+  border: 1px solid $light-grey-border;
+  border-radius: 5px;
+}
+
+.container__header{
+  border-bottom: 1px solid $light-grey-border;
+  padding: 2%;
+
+  label{
+    cursor: pointer;
+    font-size: 11pt;
+  }
+
+  > :last-child{
+    display: flex;
+    align-items: center;
+  }
+}
+
+.container__message{
+  color: $light-color;
+  margin: 5% auto;
+  text-align: center;
+}
+
+.container__footer{
+  padding: 2% 2% 0 2%;
+  border-top: 1px solid $light-grey-border;
+}
