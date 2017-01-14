@@ -2,6 +2,10 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
 
+// El provider es el que nos ayuda a que los hijos accedan al store y puedan hacer
+// dispatch tambien::
+var {Provider} = require('react-redux');
+
 //Route, Router, IndexRoute, hashHistory son variables que acceden a la propiedad de react-router::
 //EJ: var Route = require("react-router").Route;
 var {Route, Router, IndexRoute, hashHistory} = require("react-router");
@@ -26,6 +30,13 @@ $(document).foundation();
 require("style!css!sass!applicationStyles");
 
 ReactDOM.render(
-    <TodoApp />,
+    <Provider store={store}>
+      <TodoApp />
+    </Provider>,
     document.getElementById("app")
 );
+
+/* ReactDOM.render(
+  <TodoApp/>,
+  document.getElementById("app");
+); */

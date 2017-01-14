@@ -1,7 +1,12 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
+var {Provider} = require("react-redux");
 var expect = require("expect");
 var $ = require("jQuery");
+
+var configureStore = require("configureStore");
+//var TodoList = require("TodoList");
+import TodoList from 'TodoList';
 var TestUtils = require("react-addons-test-utils");
 
 var TodoApp = require("TodoApp");
@@ -11,16 +16,17 @@ describe("TodoApp", () => {
     expect(TodoApp).toExist();
   });
 
-  it('Should add todo to the todos state o handleAddTodo', () => {
-    var dummyText = 'test test';
-    var todoApp = TestUtils.renderIntoDocument(<TodoApp />);
+  it('Should render TodoList', () => {
+    var store = configureStore.configure();
+    var provider = TestUtils.renderIntoDocument(
+      <Provider store={store}>
+        <TodoApp/>
+      </Provider>
+    );
 
-    todoApp.setState({
-      todos: []
-    });
-    todoApp.handleAddTodo(dummyText);
+    var todoApp = TestUtils.scryRenderedComponentsWithType(provider, TodoApp)[0];
+    var todoList = TestUtils.scryRenderedComponentsWithType(todoApp, TodoList);
 
-    expect(todoApp.state.todos[0].text).toBe(dummyText);
-    //expect(todoApp.state.todos[0].createdAt).toBe('number');
+    expect(todoList.length).toEqual(1);
   });
 });
