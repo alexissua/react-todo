@@ -4,12 +4,14 @@ var {connect} = require("react-redux");
 //var Todo = require("Todo");
 import Todo from 'Todo';
 
+var TodoAPI = require('TodoAPI');
+
 export var TodoList = React.createClass({
   render: function(){
 
     // Como el TodoApp ya no pasa la lista de todos,
     // esta está vacía. Hay que indicarle como hacerlo con {connect}
-    var {todos} = this.props;
+    var {todos, showCompleted, searchText} = this.props;
 
     var renderTodos = () => {
 
@@ -19,11 +21,16 @@ export var TodoList = React.createClass({
         )
       }
 
-      return todos.map((todo) => {
+      return TodoAPI.filterTodos(todos, showCompleted, searchText).map((todo) => {
         return (
           <Todo key={todo.id} {...todo} />
         );
       });
+      /* return todos.map((todo) => {
+        return (
+          <Todo key={todo.id} {...todo} />
+        );
+      }); */
     };
 
     return (
@@ -37,11 +44,17 @@ export var TodoList = React.createClass({
 // Connect se ejecuta luego de que el componente ha sido creado::
 export default connect(
   (state) => {
+    return state;
+  }
+)(TodoList);
+
+/* export default connect(
+  (state) => {
     return {
       todos: state.todos
     };
   }
-)(TodoList);
+)(TodoList);*/
 
 /*module.exports = connect(
   (state) => {

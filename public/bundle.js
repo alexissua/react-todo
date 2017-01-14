@@ -123,9 +123,9 @@
 	  console.log('New state: ', store.getState());
 	});
 
-	store.dispatch(actions.addTodo('Clean the yard'));
+	/*store.dispatch(actions.addTodo('Clean the yard'));
 	store.dispatch(actions.setSearchText('yard'));
-	store.dispatch(actions.toggleShowCompleted());
+	store.dispatch(actions.toggleShowCompleted());*/
 
 	// Load Foundation
 	__webpack_require__(414);
@@ -25512,6 +25512,10 @@
 
 	var _AddTodo2 = _interopRequireDefault(_AddTodo);
 
+	var _TodoSearch = __webpack_require__(392);
+
+	var _TodoSearch2 = _interopRequireDefault(_TodoSearch);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -25523,7 +25527,7 @@
 
 	//var AddTodo = require("AddTodo");
 
-	var TodoSearch = __webpack_require__(392);
+	//var TodoSearch = require("TodoSearch");
 	var TodoAPI = __webpack_require__(393);
 
 	var TodoApp = React.createClass({
@@ -25582,7 +25586,7 @@
 	          React.createElement(
 	            'div',
 	            { className: 'container' },
-	            React.createElement(TodoSearch, { onSearch: this.handleSearch }),
+	            React.createElement(_TodoSearch2.default, { onSearch: this.handleSearch }),
 	            React.createElement(_TodoList2.default, null),
 	            React.createElement(_AddTodo2.default, { onAddTodo: this.handleAddTodo })
 	          )
@@ -47077,6 +47081,8 @@
 	//var Todo = require("Todo");
 
 
+	var TodoAPI = __webpack_require__(393);
+
 	var TodoList = exports.TodoList = React.createClass({
 	  displayName: "TodoList",
 
@@ -47084,7 +47090,10 @@
 
 	    // Como el TodoApp ya no pasa la lista de todos,
 	    // esta está vacía. Hay que indicarle como hacerlo con {connect}
-	    var todos = this.props.todos;
+	    var _props = this.props,
+	        todos = _props.todos,
+	        showCompleted = _props.showCompleted,
+	        searchText = _props.searchText;
 
 
 	    var renderTodos = function renderTodos() {
@@ -47097,9 +47106,14 @@
 	        );
 	      }
 
-	      return todos.map(function (todo) {
+	      return TodoAPI.filterTodos(todos, showCompleted, searchText).map(function (todo) {
 	        return React.createElement(_Todo2.default, _extends({ key: todo.id }, todo));
 	      });
+	      /* return todos.map((todo) => {
+	        return (
+	          <Todo key={todo.id} {...todo} />
+	        );
+	      }); */
 	    };
 
 	    return React.createElement(
@@ -47112,10 +47126,16 @@
 
 	// Connect se ejecuta luego de que el componente ha sido creado::
 	exports.default = connect(function (state) {
-	  return {
-	    todos: state.todos
-	  };
+	  return state;
 	})(TodoList);
+
+	/* export default connect(
+	  (state) => {
+	    return {
+	      todos: state.todos
+	    };
+	  }
+	)(TodoList);*/
 
 	/*module.exports = connect(
 	  (state) => {
@@ -47266,45 +47286,65 @@
 /* 392 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	var React = __webpack_require__(8);
 
-	var TodoSearch = React.createClass({
-	  displayName: "TodoSearch",
+	var _require = __webpack_require__(420),
+	    connect = _require.connect;
 
-	  handleSearch: function handleSearch() {
-	    var showCompleted = this.refs.showCompleted.checked;
-	    var searchText = this.refs.searchText.value;
+	var actions = __webpack_require__(394);
 
-	    // Le pasamos al parent los parametros::
-	    this.props.onSearch(showCompleted, searchText);
-	  },
+	var TodoSearch = exports.TodoSearch = React.createClass({
+	  displayName: 'TodoSearch',
+
 	  render: function render() {
+	    var _this = this;
+
+	    var _props = this.props,
+	        dispatch = _props.dispatch,
+	        showCompleted = _props.showCompleted,
+	        searchText = _props.searchText;
+
+
 	    return React.createElement(
-	      "div",
-	      { className: "container__header" },
+	      'div',
+	      { className: 'container__header' },
 	      React.createElement(
-	        "div",
+	        'div',
 	        null,
-	        React.createElement("input", { type: "search", ref: "searchText", placeholder: "Search todos", onChange: this.handleSearch })
+	        React.createElement('input', { type: 'search', ref: 'searchText', placeholder: 'Search todos', value: searchText, onChange: function onChange() {
+	            var searchText = _this.refs.searchText.value;
+	            dispatch(actions.setSearchText(searchText));
+	          } })
 	      ),
 	      React.createElement(
-	        "div",
+	        'div',
 	        null,
 	        React.createElement(
-	          "label",
+	          'label',
 	          null,
-	          React.createElement("input", { type: "checkbox", ref: "showCompleted", onChange: this.handleSearch }),
-	          "Show completed todos"
+	          React.createElement('input', { type: 'checkbox', ref: 'showCompleted', checked: showCompleted, onChange: function onChange() {
+	              dispatch(actions.toggleShowCompleted());
+	            } }),
+	          'Show completed todos'
 	        )
 	      ),
-	      React.createElement("form", null)
+	      React.createElement('form', null)
 	    );
 	  }
 	});
 
-	module.exports = TodoSearch;
+	exports.default = connect(function (state) {
+	  return {
+	    showCompleted: state.showCompleted,
+	    searchText: state.searchText
+	  };
+	})(TodoSearch);
+	//module.exports = TodoSearch;
 
 /***/ },
 /* 393 */
@@ -48356,7 +48396,7 @@
 
 	  switch (action.type) {
 	    case 'TOGGLE_SHOW_COMPLETED':
-	      return state = true;
+	      return !state;
 	    default:
 	      return state;
 	  };
